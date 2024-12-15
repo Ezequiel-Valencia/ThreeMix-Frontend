@@ -1,20 +1,36 @@
 <script lang="ts">
   import { onMount } from "svelte";
+    let position = $state(2)
 
     let musicEntries = [
         {
             title: "Tv Off",
+            artist: "Kendrick Lamar",
             pathResource: "U8F5G5wR1mk"
         },
         {
-            title: "Some",
+            title: "Not Like Us",
+            artist: "Kendrick Lamar",
             pathResource: "H58vbez_m4E"
         },
         {
-            title: "Some",
+            title: "King Of Silence",
+            artist: "Cibao Mattoo",
             pathResource: "5WRqGfxGXBw"
         }
     ]
+    let carouselEntity: HTMLElement;
+    onMount(() => {
+        carouselEntity = document.getElementById("carousel") as HTMLElement
+    })
+
+    function changeEntryInCarosuel(e: Event, index: number){
+        position = index + 1;
+        carouselEntity.style.setProperty("--position", "" + position);
+        let carosulItem = document.getElementById("carousel-item-" + index)
+        
+    }
+
 </script>
 
 <!-- https://www.youtube.com/watch?v=eLHSFxF0Z4U -->
@@ -36,18 +52,23 @@
 <section id="music-body-section">
     <main id="carousel">
         {#each musicEntries as song, i}
-            <div class="carousel-item">
+            <div
+            style="--offset: {i + 1};
+            opacity: {Math.abs(position - (i + 1)) > 1 ? 0 : 1}"
+            id="carousel-item-{i}"
+            class="carousel-item">
                 <iframe src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <h2>{song.title}</h2>
+                by
+                <p>{song.artist}</p>
             </div>
         {/each}
     </main>
     <div id="radio-buttons">
         {#each musicEntries as song, i}
-            {#if i == 1}
-                <input class="radio-button" type="radio" name="music-choice" checked/>
-            {:else}
-                <input class="radio-button" type="radio" name="music-choice" />
-            {/if}
+            <input
+            onchange={(e) => {changeEntryInCarosuel(e, i)}} 
+            class="radio-button" type="radio" name="music-choice" id="radion-button-{i}"/>
         {/each}
     </div>
 </section>
@@ -71,6 +92,26 @@
         justify-content: center;
         align-items: center;
         margin: auto;
+        width: 80vw;
+        height: 20vh;
+        transform-style: preserve-3d;
+        overflow: hidden;
+        perspective: 600px;
+        --position: 2;
+    }
+
+    .carousel-item{
+        text-align: center;
+        position: absolute;
+        --r: calc(var(--position) - var(--offset));
+        --absr: abs(var(--r));
+
+        transition: all 0.25s linear;
+
+        transform: rotateY(calc(-25deg * var(--r)))
+        translateX(calc(-40vw * var(--r)));
+
+        z-index: calc(var(--position) - var(--absr));
     }
 
 </style>
