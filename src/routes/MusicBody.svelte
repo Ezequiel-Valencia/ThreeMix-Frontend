@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-    let position = $state(2)
+    let position = $state(1)
 
     let musicEntries = [
         {
@@ -20,15 +20,35 @@
         }
     ]
     let carouselEntity: HTMLElement;
+    let radioButtons: NodeListOf<HTMLInputElement>
     onMount(() => {
         carouselEntity = document.getElementById("carousel") as HTMLElement
+        radioButtons = document.querySelectorAll(".radio-button") as NodeListOf<HTMLInputElement>
+        document.addEventListener("keydown", (ev: KeyboardEvent) => {
+            if (ev.key == "ArrowRight"){
+                rightCarosuel()
+            } else if (ev.key == "ArrowLeft"){
+                leftCarosuel()
+            }
+        })
     })
 
-    function changeEntryInCarosuel(e: Event, index: number){
-        position = index + 1;
+    function leftCarosuel(){
+        let i = position - 1
+        changeEntryInCarosuel(i > -1 ? i : 2)
+    }
+
+    function rightCarosuel(){
+        let i = (position + 1) % 3
+        changeEntryInCarosuel(i)
+    }
+
+    function changeEntryInCarosuel(index: number){
+        position = index;
         carouselEntity.style.setProperty("--position", "" + position);
-        let carosulItem = document.getElementById("carousel-item-" + index)
-        
+        for(let i = 0; i < radioButtons.length; i++){
+            radioButtons[i].checked = i == index;
+        }
     }
 
 </script>
@@ -50,24 +70,44 @@
 
 
 <section id="music-body-section">
-    <main id="carousel">
-        {#each musicEntries as song, i}
-            <div
-            style="--offset: {i + 1};
-            opacity: {Math.abs(position - (i + 1)) > 1 ? 0 : 1}"
-            id="carousel-item-{i}"
-            class="carousel-item">
-                <iframe src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                <h2>{song.title}</h2>
-                by
-                <p>{song.artist}</p>
-            </div>
-        {/each}
+    <main style="display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        margin: auto;">
+        <button class="side-button" onclick={(e) => {leftCarosuel()}}>
+            <img
+            style="margin:auto; height: 5vmin; padding-right:2vw; transform:rotate(180deg);" src="./right-arrow.svg" alt="left-arrow">
+        </button>
+        
+        <section id="carousel">
+            {#each musicEntries as song, i}
+                <div
+                style="--offset: {i};
+                opacity: {Math.abs(position - i) > 1 ? 0 : 1};"
+                role="gridcell"
+                tabindex="{i}"
+                id="carousel-item-{i}"
+                onclick={(e) => {changeEntryInCarosuel(i)}}
+                onkeydown={(e) => {changeEntryInCarosuel(i)}}
+                class="carousel-item">
+                    <iframe style=" pointer-events: {i == position ? 'all' : 'none'}; width:30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <h2>{song.title}</h2>
+                    by
+                    <p>{song.artist}</p>
+                </div>
+            {/each}
+        </section>
+        <button class="side-button" onclick={(e) => {rightCarosuel()}}>
+            <img
+            style=" margin:auto; height: 5vmin; padding-right:2vw;" src="./right-arrow.svg" alt="right-arrow">
+        </button>
+        
     </main>
     <div id="radio-buttons">
         {#each musicEntries as song, i}
             <input
-            onchange={(e) => {changeEntryInCarosuel(e, i)}} 
+            onchange={(e) => {changeEntryInCarosuel(i)}} 
             class="radio-button" type="radio" name="music-choice" id="radion-button-{i}"/>
         {/each}
     </div>
@@ -93,11 +133,11 @@
         align-items: center;
         margin: auto;
         width: 80vw;
-        height: 20vh;
+        height: 40vh;
         transform-style: preserve-3d;
         overflow: hidden;
         perspective: 600px;
-        --position: 2;
+        --position: 1;
     }
 
     .carousel-item{
@@ -112,6 +152,14 @@
         translateX(calc(-40vw * var(--r)));
 
         z-index: calc(var(--position) - var(--absr));
+    }
+
+    .side-button{
+        height: 50vh; 
+        width:10vw;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
     }
 
 </style>
