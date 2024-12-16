@@ -1,26 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-    let position = $state(1)
-
-    let musicEntries = [
-        {
-            title: "Tv Off",
-            artist: "Kendrick Lamar",
-            pathResource: "U8F5G5wR1mk"
-        },
-        {
-            title: "Not Like Us",
-            artist: "Kendrick Lamar",
-            pathResource: "H58vbez_m4E"
-        },
-        {
-            title: "King Of Silence",
-            artist: "Cibao Mattoo",
-            pathResource: "5WRqGfxGXBw"
-        }
-    ]
     let carouselEntity: HTMLElement;
     let radioButtons: NodeListOf<HTMLInputElement>
+    let { musicEntries, carosuelPosition = $bindable(1) } = $props()
+    
     onMount(() => {
         carouselEntity = document.getElementById("carousel") as HTMLElement
         radioButtons = document.querySelectorAll(".radio-button") as NodeListOf<HTMLInputElement>
@@ -33,19 +16,21 @@
         })
     })
 
+    $effect(() => {changeEntryInCarosuel(carosuelPosition)})
+
     function leftCarosuel(){
-        let i = position - 1
-        changeEntryInCarosuel(i > -1 ? i : 2)
+        let i = carosuelPosition - 1
+        changeEntryInCarosuel(i > -1 ? i : 0)
     }
 
     function rightCarosuel(){
-        let i = (position + 1) % 3
-        changeEntryInCarosuel(i)
+        let i = carosuelPosition + 1
+        changeEntryInCarosuel(i > musicEntries.length - 1 ? musicEntries.length - 1 : i)
     }
 
     function changeEntryInCarosuel(index: number){
-        position = index;
-        carouselEntity.style.setProperty("--position", "" + position);
+        carosuelPosition = index;
+        carouselEntity.style.setProperty("--position", "" + carosuelPosition);
         for(let i = 0; i < radioButtons.length; i++){
             radioButtons[i].checked = i == index;
         }
@@ -84,14 +69,14 @@
             {#each musicEntries as song, i}
                 <div
                 style="--offset: {i};
-                opacity: {Math.abs(position - i) > 1 ? 0 : 1};"
+                opacity: {Math.abs(carosuelPosition - i) > 1 ? 0 : 1};"
                 role="gridcell"
                 tabindex="{i}"
                 id="carousel-item-{i}"
                 onclick={(e) => {changeEntryInCarosuel(i)}}
                 onkeydown={(e) => {changeEntryInCarosuel(i)}}
                 class="carousel-item">
-                    <iframe style=" pointer-events: {i == position ? 'all' : 'none'}; width:30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe style=" pointer-events: {i == carosuelPosition ? 'all' : 'none'}; width:30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     <h2>{song.title}</h2>
                     by
                     <p>{song.artist}</p>
@@ -119,7 +104,7 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        padding-bottom: 10vh;
+        // padding-bottom: 10vh;
     }
 
     .radio-button:hover{
