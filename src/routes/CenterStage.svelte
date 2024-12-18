@@ -46,8 +46,10 @@
 
 <style lang="scss">
   #center-stage{
-    height:80vh; 
-    width:60vw; 
+    padding-top: 2%;
+    padding-bottom: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
     position:absolute; 
     background-color: white; 
     top:50%; 
