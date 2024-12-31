@@ -1,6 +1,5 @@
 <script lang="ts">
     // 
-    import Calendar from '$lib/components/calendar.svelte';
   import { onMount } from 'svelte';
   import UserOptions from './UserOptions.svelte';
     

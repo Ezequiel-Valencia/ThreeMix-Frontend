@@ -6,7 +6,7 @@
     
     onMount(() => {
         carouselEntity = document.getElementById("carousel") as HTMLElement
-        radioButtons = document.querySelectorAll(".radio-button") as NodeListOf<HTMLInputElement>
+        // radioButtons = document.querySelectorAll(".radio-button") as NodeListOf<HTMLInputElement>
         document.addEventListener("keydown", (ev: KeyboardEvent) => {
             if (ev.key == "ArrowRight"){
                 rightCarosuel()
@@ -31,9 +31,9 @@
     function changeEntryInCarosuel(index: number){
         carosuelPosition = index;
         carouselEntity.style.setProperty("--position", "" + carosuelPosition);
-        for(let i = 0; i < radioButtons.length; i++){
-            radioButtons[i].checked = i == index;
-        }
+        // for(let i = 0; i < radioButtons.length; i++){
+        //     radioButtons[i].checked = i == index;
+        // }
     }
 
 </script>
@@ -90,11 +90,11 @@
         
     </main>
     <div id="radio-buttons">
-        {#each musicEntries as song, i}
+        <!-- {#each musicEntries as song, i}
             <input
             onchange={(e) => {changeEntryInCarosuel(i)}} 
             class="radio-button" type="radio" name="music-choice" id="radion-button-{i}"/>
-        {/each}
+        {/each} -->
     </div>
 </section>
 
@@ -107,9 +107,9 @@
         // padding-bottom: 10vh;
     }
 
-    .radio-button:hover{
-        cursor: pointer;
-    }
+    // .radio-button:hover{
+    //     cursor: pointer;
+    // }
 
     #carousel{
         display: flex;
