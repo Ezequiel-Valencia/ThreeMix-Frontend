@@ -23,6 +23,8 @@ import TopBar from "./TopBar.svelte";
             pathResource: "5WRqGfxGXBw"
         }
     ]
+// Paint like shaders
+// https://codepen.io/DonKarlssonSan/embed/gROawd?default-tab=result#js-box
 </script>
 
 
@@ -38,6 +40,5 @@ import TopBar from "./TopBar.svelte";
         background-color: rgb(255, 251, 246);
         height: 100vh;
         width: 100vw;
-        display:grid;
     }
 </style>

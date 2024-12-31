@@ -43,6 +43,7 @@
 
     #title-text{
         font-size: xx-large;
+        font-family: 'Times New Roman', Times, serif;
     }
 
     .icons{

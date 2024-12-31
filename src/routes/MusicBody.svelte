@@ -1,12 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
     let carouselEntity: HTMLElement;
-    let radioButtons: NodeListOf<HTMLInputElement>
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
     
     onMount(() => {
         carouselEntity = document.getElementById("carousel") as HTMLElement
-        // radioButtons = document.querySelectorAll(".radio-button") as NodeListOf<HTMLInputElement>
         document.addEventListener("keydown", (ev: KeyboardEvent) => {
             if (ev.key == "ArrowRight"){
                 rightCarosuel()
@@ -31,9 +29,6 @@
     function changeEntryInCarosuel(index: number){
         carosuelPosition = index;
         carouselEntity.style.setProperty("--position", "" + carosuelPosition);
-        // for(let i = 0; i < radioButtons.length; i++){
-        //     radioButtons[i].checked = i == index;
-        // }
     }
 
 </script>
@@ -59,43 +54,40 @@
         text-align: center;
         justify-content: center;
         align-items: center;
-        margin: auto;">
+        margin-left: auto; margin-right:auto; margin-bottom: 0;">
         <button class="side-button" onclick={(e) => {leftCarosuel()}}>
             <img
             style="margin:auto; height: 5vmin; padding-right:2vw; transform:rotate(180deg);" src="./right-arrow.svg" alt="left-arrow">
         </button>
         
-        <section id="carousel">
-            {#each musicEntries as song, i}
-                <div
-                style="--offset: {i};
-                opacity: {Math.abs(carosuelPosition - i) > 1 ? 0 : 1};"
-                role="gridcell"
-                tabindex="{i}"
-                id="carousel-item-{i}"
-                onclick={(e) => {changeEntryInCarosuel(i)}}
-                onkeydown={(e) => {changeEntryInCarosuel(i)}}
-                class="carousel-item">
-                    <iframe style=" pointer-events: {i == carosuelPosition ? 'all' : 'none'}; width:30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    <h2>{song.title}</h2>
-                    by
-                    <p>{song.artist}</p>
-                </div>
-            {/each}
-        </section>
+        <div>
+            <section id="carousel">
+                {#each musicEntries as song, i}
+                    <div
+                    style="--offset: {i};
+                    opacity: {Math.abs(carosuelPosition - i) > 1 ? 0 : 1};"
+                    role="gridcell"
+                    tabindex="{i}"
+                    id="carousel-item-{i}"
+                    onclick={(e) => {changeEntryInCarosuel(i)}}
+                    onkeydown={(e) => {changeEntryInCarosuel(i)}}
+                    class="carousel-item">
+                        <iframe style="pointer-events: {i == carosuelPosition ? 'all' : 'none'}; width: 30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <h2>{song.title}</h2>
+                        by
+                        <p>{song.artist}</p>
+                    </div>
+                {/each}
+            </section>
+            <hr style="height: .2em; background-color:rgba(125, 125, 125, 0.42);"/>
+        </div>
+       
         <button class="side-button" onclick={(e) => {rightCarosuel()}}>
             <img
             style=" margin:auto; height: 5vmin; padding-right:2vw;" src="./right-arrow.svg" alt="right-arrow">
         </button>
         
     </main>
-    <div id="radio-buttons">
-        <!-- {#each musicEntries as song, i}
-            <input
-            onchange={(e) => {changeEntryInCarosuel(i)}} 
-            class="radio-button" type="radio" name="music-choice" id="radion-button-{i}"/>
-        {/each} -->
-    </div>
 </section>
 
 
@@ -104,19 +96,14 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        // padding-bottom: 10vh;
+        height:min-content;
     }
-
-    // .radio-button:hover{
-    //     cursor: pointer;
-    // }
 
     #carousel{
         display: flex;
         text-align: center;
         justify-content: center;
         align-items: center;
-        margin: auto;
         width: 80vw;
         height: 40vh;
         transform-style: preserve-3d;
