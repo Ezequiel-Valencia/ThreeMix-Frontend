@@ -1,5 +1,6 @@
 <script lang="ts">
      let showCuratorReason = $state(true)
+     let { curatorName, curatorDescription } = $props()
 </script>
 
 
@@ -9,18 +10,17 @@
             <figure class="figures" style="align-items:center;">
                 <img style="height:8vh;" alt="user-profile-pic" src="/user-circle.svg">
                 <figcaption style="text-align: center;">
-                    Bob
+                    {curatorName}
                 </figcaption>
             </figure>
             <div style="padding-left: 5%;">
                 <h3>
                     <em>
-                        <u>Why These Songs Where Chosen By Bob:</u>
+                        <u>Why These Songs Where Chosen By {curatorName}:</u>
                     </em>
                 </h3>
                 <p>
-                    Here is the reason why this curator chose this set of songs.
-                    It's important to them for these particular reasons, and such.
+                    {curatorDescription}
                 </p>
             </div>
         </div>

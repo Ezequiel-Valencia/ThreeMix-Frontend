@@ -7,7 +7,10 @@ import TopBar from "./TopBar.svelte";
 
   let carosuelPosition = $state(1);
 
-  let musicEntries = [
+  let todaysSelection = {
+    curatorName: "Ezequiel",
+    curatorDescription: "Here is the reason why this curator chose this set of songs. It's important to them for these particular reasons, and such.",
+    musicEntries: [
         {
             title: "Tv Off",
             artist: "Kendrick Lamar",
@@ -24,6 +27,8 @@ import TopBar from "./TopBar.svelte";
             pathResource: "5WRqGfxGXBw"
         }
     ]
+  }
+
 // Paint like shaders
 // https://codepen.io/DonKarlssonSan/embed/gROawd?default-tab=result#js-box
 </script>
@@ -31,9 +36,9 @@ import TopBar from "./TopBar.svelte";
 
 <section id="front-page">
     <TopBar></TopBar>
-    <CuratorDescription></CuratorDescription>
-    <MusicBody musicEntries={musicEntries} bind:carosuelPosition={carosuelPosition}></MusicBody>
-    <VoteSection musicEntries={musicEntries} bind:carosuelPosition={carosuelPosition}></VoteSection>
+    <CuratorDescription curatorDescription={todaysSelection["curatorDescription"]} curatorName={todaysSelection["curatorName"]}></CuratorDescription>
+    <MusicBody musicEntries={todaysSelection["musicEntries"]} bind:carosuelPosition={carosuelPosition}></MusicBody>
+    <VoteSection musicEntries={todaysSelection["musicEntries"]} bind:carosuelPosition={carosuelPosition}></VoteSection>
 </section>
 
 
@@ -41,6 +46,7 @@ import TopBar from "./TopBar.svelte";
     #front-page{
         background-color: rgb(255, 251, 246);
         height: 100%;
+        min-height: 100vh;
         width: 100vw;
     }
 </style>
