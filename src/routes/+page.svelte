@@ -1,6 +1,7 @@
 
 <script lang="ts">
-  import MusicBody from "./MusicBody.svelte";
+  import CuratorDescription from "./CuratorDescription.svelte";
+import MusicBody from "./MusicBody.svelte";
 import TopBar from "./TopBar.svelte";
   import VoteSection from "./VoteSection.svelte";
 
@@ -30,6 +31,7 @@ import TopBar from "./TopBar.svelte";
 
 <section id="front-page">
     <TopBar></TopBar>
+    <CuratorDescription></CuratorDescription>
     <MusicBody musicEntries={musicEntries} bind:carosuelPosition={carosuelPosition}></MusicBody>
     <VoteSection musicEntries={musicEntries} bind:carosuelPosition={carosuelPosition}></VoteSection>
 </section>
@@ -38,7 +40,7 @@ import TopBar from "./TopBar.svelte";
 <style lang="scss">
     #front-page{
         background-color: rgb(255, 251, 246);
-        height: 100vh;
+        height: 100%;
         width: 100vw;
     }
 </style>
