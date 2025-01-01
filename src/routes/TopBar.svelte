@@ -15,7 +15,12 @@
         </figure>
     </button>
 
-    <h1 id="title-text">Three Mix</h1>
+    <div style="text-align: center;">
+        <h1 id="title-text">Three-Mix</h1>
+        <em>
+            <p style="font-family: 'Times New Roman', Times, serif;">Remixing the way new music is found.</p>
+        </em> 
+    </div>
     <button onclick={() => {showUserOptions = !showUserOptions}}>
         <figure style="padding-right:2vw;" class="figures">
             <img class="icons" src="user-circle.svg" alt="User">
