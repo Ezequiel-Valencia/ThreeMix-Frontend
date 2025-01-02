@@ -47,7 +47,8 @@
             </button>
         {/each}
     </div>
-    <button type="submit" style="text-align: center;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Vote</button>
+    <button type="submit" style="text-align: center;" 
+    class="vote-button">Vote</button>
 </form>
 
 
@@ -73,4 +74,62 @@
         padding-top: 1vh;
         padding-bottom: 1vh;
     }
+
+        /* 4 */
+    .vote-button {
+        position: relative;
+        z-index: 2;
+        line-height: 40px;
+        padding: 0;
+        border-color: black;
+        border-width: 2px;
+        border-style: solid;
+    }
+    .vote-button:hover{
+        border: none;
+        background-color: rgba(128, 128, 128, 0.199);
+    }
+    .vote-button:focus{
+        background-color: gray;
+    }
+    .vote-button:before,
+    .vote-button:after {
+        position: absolute;
+        content: "";
+        width: 0%;
+        height: 0%;
+        border: 2px solid;
+        z-index: -1;
+        transition: all 0.3s ease;
+    }
+    .vote-button:before {
+        top: 0;
+        left: 0;
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+        border-top-color: #000;
+        border-left-color: #000;
+    }
+    .vote-button:after{
+        bottom: 0;
+        right: 0;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        border-bottom-color: #000;
+        border-right-color: #000;
+    }
+
+    .vote-button:hover:after{
+        right: 5px;
+    }
+
+    .vote-button:hover:before,
+    .vote-button:hover:after {
+        padding-top: 5%;
+        padding-bottom: 6%;
+        border-color: #000;
+        height: 100%;
+        width: 100%;
+    }
+
 </style>
