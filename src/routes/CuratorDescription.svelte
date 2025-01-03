@@ -1,11 +1,15 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { getShowCuratorNotes } from "./UserPrefernces";
-
-    let cc = getShowCuratorNotes()
-     let showCuratorReason = $state(cc.read())
-     cc.subscribe((b) => {
+    let cc: any
+    let showCuratorReason: boolean = $state(true)
+    if (browser){
+        cc = getShowCuratorNotes()
+        showCuratorReason = cc.read()
+        cc.subscribe((b: boolean) => {
         showCuratorReason = b
      })
+    }
      let { curatorName, curatorDescription } = $props()
 </script>
 

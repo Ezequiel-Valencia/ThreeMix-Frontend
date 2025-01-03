@@ -1,17 +1,21 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { getShowCuratorNotes } from "./UserPrefernces";
 
     let loggedIn = true;
     let username = "Ezequiel"
-    let cc = getShowCuratorNotes()
-    let showUserNotes = $state(cc.read())
+    let cc: any
+    let showUserNotes = $state(true)
+    if (browser){
+        cc = getShowCuratorNotes()
+        showUserNotes = cc.read()
+    }
     $effect(() => {
         cc.setBoolCuratorNotes(showUserNotes)
     })
     
 </script>
 
-<!-- TODO: Add checkbox to turn off curator dialogs -->
 <section style="height:100%; width:100%;">
     {#if loggedIn}
         <div>
