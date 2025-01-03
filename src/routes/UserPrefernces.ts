@@ -1,7 +1,9 @@
 import { readable, writable } from "svelte/store";
 
-const safeLocalStorage = globalThis.localStorage;
-const isLocalStorageItemNull = (key:string) => safeLocalStorage?.getItem(key) === null;
+const isLocalStorageItemNotPresent = (key:string) => {
+    let item = localStorage.getItem(key)
+    return item === null || item === undefined
+};
 
 function convertToBoolean(input: string | null): boolean {
     if (input == null){
@@ -17,17 +19,52 @@ function convertToBoolean(input: string | null): boolean {
 
 export function getShowCuratorNotes() {
     const key = 'showCuratorNotes';
-    if (isLocalStorageItemNull(key)) { safeLocalStorage?.setItem(key, 'true') }
-    const bool = convertToBoolean(safeLocalStorage?.getItem(key) as string);
+    if (isLocalStorageItemNotPresent(key)) { localStorage.setItem(key, 'true') }
+    const bool = convertToBoolean(localStorage.getItem(key) as string);
     const { subscribe, set, update } = writable(bool)
 
     // subscribe(val => localStorage.setItem("musicStore", val.toString()))
     return {
         subscribe,
-        read: () => {return convertToBoolean(safeLocalStorage?.getItem(key))},
+        read: () => {return convertToBoolean(localStorage.getItem(key))},
         setBoolCuratorNotes: (b: boolean) => { 
              set(b), 
-             safeLocalStorage?.setItem(key, String(b))
+             localStorage.setItem(key, String(b))
             }
+    }
+}
+
+/**
+ * Uses the local storage date of last voted as a cache reference
+ * for whether voting is allowed. Verfication is still done on the server
+ * no matter the state of local storage.
+ */
+export type VoteDecision = {
+    dateUTC: string
+    number: number
+}
+export function getLastVoteDate(){
+    const key = 'lastVote'
+    let lastVoteDone: VoteDecision
+    if (isLocalStorageItemNotPresent(key)) {
+        let minute = 60 * 1000
+        let day = 24 * 60 * minute
+        let yesterday = new Date(new Date().getTime() - day)
+        lastVoteDone = {
+            dateUTC: yesterday.toUTCString(),
+            number: 0
+        }
+        localStorage.setItem(key, JSON.stringify(lastVoteDone))
+    } else{
+        lastVoteDone = JSON.parse(localStorage.getItem(key) as string) 
+    }
+    const {subscribe, set} = writable(lastVoteDone)
+    return {
+        subscribe,
+        read: (): VoteDecision => {return JSON.parse(localStorage.getItem(key) as string)},
+        setVote: (vote: VoteDecision) => {
+            set(vote),
+            localStorage.setItem(key, JSON.stringify(vote))
+        }
     }
 }
