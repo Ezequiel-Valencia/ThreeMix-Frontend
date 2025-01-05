@@ -1,9 +1,9 @@
 
 <script lang="ts">
-  import CuratorDescription from "./CuratorDescription.svelte";
-import MusicBody from "./MusicBody.svelte";
-import TopBar from "./TopBar.svelte";
-  import VoteSection from "./VoteSection.svelte";
+  import CuratorDescription from "./_music-selection/CuratorDescription.svelte";
+  import MusicBody from "./_music-selection/MusicBody.svelte";
+  import TopBar from "./TopBar.svelte";
+  import VoteSection from "./_music-selection/VoteSection.svelte";
 
   let carosuelPosition = $state(1);
 
