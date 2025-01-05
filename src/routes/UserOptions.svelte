@@ -1,16 +1,16 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { ZodError, ZodIssue } from "zod";
-  import { userFormSchema } from "../types/user";
+  import { userFormSchema, type User } from "../types/user";
   import { apiServer } from "../utils/config";
   import { getShowCuratorNotes } from "./UserPreferences";
   import { readStreamBody } from "../utils/tools";
 
-    let loggedIn = false;
-    let username = "Ezequiel"
+    let user: User | null = $state(null)
     let cc: any
     let showUserNotes = $state(true)
-    let errors: ZodIssue[] = $state([])
+    let validationErrors: ZodIssue[] = $state([])
+    let httpError: string = $state("")
     if (browser){
         cc = getShowCuratorNotes()
         showUserNotes = cc.read()
@@ -19,7 +19,7 @@
         cc.setBoolCuratorNotes(showUserNotes)
     })
 
-    async function login(){
+    async function sendForm(login: boolean){
         const form = document.querySelector("#login-form") as HTMLFormElement
         // https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_forms_through_JavaScript
         const formData = new FormData(form)
@@ -28,27 +28,35 @@
         
         if (validation.success){
             try{
-                errors = []
-                const response = await fetch(apiServer + "/login", {
+                let apiURI = apiServer + (login ? "/login" : "/register")
+                validationErrors = []
+                const response = await fetch(apiURI, {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    credentials: "include"
                 })
-                console.log(response)
-                console.log(await readStreamBody(response.body as ReadableStream))
+                if (response.status != 200){
+                    httpError = await readStreamBody(response.body as ReadableStream)
+                } else {
+                    user = await response.json()
+                    console.log(user)
+                    console.log(response)
+                    httpError = ""
+                }
             } catch (e){
                 console.error(e)
             }
         } else {
-            errors = validation.error.errors
+            validationErrors = validation.error.errors
         }
     }
     
 </script>
 
 <section style="height:100%; width:100%;">
-    {#if loggedIn}
+    {#if user != null}
         <div>
-            <h1 style="font-size: x-large;">Hello {username}</h1>
+            <h1 style="font-size: x-large;">Hello {user.Username}</h1>
             <div style="display:flex; width:100%;">
                 <input bind:checked={showUserNotes} id="show-curator-notes" style="transform:scale(1.5);" type="checkbox"> 
                 <label style="white-space:nowrap; padding-left:4%;" for="show-curator-notes">Show curator reason for song selection?</label>
@@ -58,7 +66,7 @@
     {:else}
         <div style="text-align: center;">
             <h1 style="font-size: x-large;">Please Login</h1>
-            <form id="login-form" onsubmit={login} style="margin-top: 5%; margin-bottom:5%;">
+            <form id="login-form" style="margin-top: 5%; margin-bottom:5%;">
                 <div style="display: flex;">
                     <div style="text-align:left; padding-right:3%;" class="login-input">
                         <label style="font-size: 1.2em;" for="username">Username: </label>
@@ -69,12 +77,16 @@
                         <input id="password" type="password" name="password">
                     </div>
                 </div>
-                {#each errors as err}
+                {#each validationErrors as err}
                     <p style="max-width: 30vw;">{err.message}</p>
                 {/each}
-                <button style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded" type="submit">Login</button>
+                {#if httpError != ""}
+                    <p>{httpError}</p>
+                {/if}
+                <button onclick={() => {sendForm(true)}} style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded" type="submit">Login</button>
+                <br>
+                <button onclick={() => {sendForm(false)}} id="sign-up">Sign up</button>
             </form>
-            <a href="/sign_up">Sign Up</a>
         </div>
     {/if}
 
@@ -92,13 +104,14 @@
         height: 1.5em;
     }
 
-    h1, label, a{
+    h1, label{
         color: black;
     }
 
-    a{
+    #sign-up{
         font-size: medium;
         text-decoration-color: black;
         text-decoration-line: underline;
+        padding-top: 5%;
     }
 </style>

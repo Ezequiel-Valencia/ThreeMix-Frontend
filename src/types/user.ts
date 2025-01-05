@@ -3,9 +3,9 @@ import { z, type ZodFormattedError } from "zod"
 import { alphaNumericRegex, anRegexWithExtraChars } from "../utils/config"
 
 export const userSchema = z.object({
-    username: z.string().min(4).max(20).regex(alphaNumericRegex),
-    creationDate: z.string().min(2),
-    role: z.string().min(2)
+    Username: z.string().min(4).max(20).regex(alphaNumericRegex),
+    CreationDate: z.string().min(2),
+    Role: z.string().min(2)
 })
 
 export const userFormSchema = z.object({
