@@ -1,9 +1,17 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import CenterStage from "./CenterStage.svelte";
+  import { getUserCache, type UserCache } from "./UserPreferences";
+  import { browser } from "$app/environment";
+  import type { User } from "../types/user";
 
     let showPastVotes = $state(false);
     let showUserOptions = $state(false);
+    let userCache: UserCache
+    let user: User | null = $state(null)
+    if (browser){
+        userCache = getUserCache()
+        user = userCache.read()
+    }
 </script>
 
 
@@ -24,7 +32,7 @@
     <button onclick={() => {showUserOptions = !showUserOptions}}>
         <figure style="padding-right:2vw;" class="figures">
             <img class="icons" src="user-circle.svg" alt="User">
-            <figcaption>User</figcaption>
+            <figcaption>{user == null ? "Login" : user.Username}</figcaption>
         </figure>
     </button>
 

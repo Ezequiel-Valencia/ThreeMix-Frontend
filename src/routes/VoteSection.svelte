@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getLastVoteDate, type VoteDecision } from "./UserPreferences";
+  import { getLastVoteDate, getUserCache, type UserCache, type VoteDecision } from "./UserPreferences";
   import { browser } from "$app/environment";
+  import type { User } from "../types/user";
 
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
 
@@ -10,12 +11,16 @@
     let lastVoteHandler: any
     let lastVote: VoteDecision
     let didTheyVoteToday: boolean = $state(false)
+    let userCache: UserCache
+    let user: User | null = $state(null)
 
     // Unlike onMount it does not have to wait for DOM
     if (browser){
         lastVoteHandler = getLastVoteDate()
         lastVote = lastVoteHandler.read()
         didTheyVoteToday = new Date(lastVote.dateUTC).getDate() == new Date().getDate()
+        userCache = getUserCache()
+        user = userCache.read()
         if (didTheyVoteToday){
             selectedOption = lastVote.number
         }
@@ -62,10 +67,16 @@
             </button>
         {/each}
     </div>
-    {#if !didTheyVoteToday}
+    {#if !didTheyVoteToday && user != null}
         <button disabled={didTheyVoteToday} type="submit" 
         style="text-align: center;" 
         class="vote-button">{didTheyVoteToday ? "Voted": "Vote"}</button>
+    {:else if user == null}
+        <div style="text-align: center;">
+            <h2 style="font-size: x-large; margin:auto;">
+                Login to cast a vote.
+            </h2>
+        </div>
     {/if}
 </form>
 {#if didTheyVoteToday}

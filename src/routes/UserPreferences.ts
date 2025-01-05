@@ -1,4 +1,5 @@
-import { readable, writable } from "svelte/store";
+import { readable, writable, type Subscriber, type Unsubscriber } from "svelte/store";
+import type { User } from "../types/user";
 
 const isLocalStorageItemNotPresent = (key:string) => {
     let item = localStorage.getItem(key)
@@ -68,3 +69,29 @@ export function getLastVoteDate(){
         }
     }
 }
+
+export type UserCache = {
+    subscribe: (run: Subscriber<User | null>) => Unsubscriber,
+    read: () => User | null,
+    setUser: (user: User) => void
+}
+
+export function getUserCache(): UserCache{
+    const key = 'user_cache'
+    let cachedUser: User | null
+    if (isLocalStorageItemNotPresent(key)) {
+        cachedUser = null
+    } else{
+        cachedUser = JSON.parse(localStorage.getItem(key) as string) 
+    }
+    const {subscribe, set} = writable(cachedUser)
+    return {
+        subscribe,
+        read: (): User | null => {return isLocalStorageItemNotPresent(key) ? null : JSON.parse(localStorage.getItem(key) as string)},
+        setUser: (user: User) => {
+            set(user),
+            localStorage.setItem(key, JSON.stringify(user))
+        }
+    }
+}
+

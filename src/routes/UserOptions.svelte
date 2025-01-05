@@ -1,11 +1,12 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type { ZodError, ZodIssue } from "zod";
+  import type { ZodIssue } from "zod";
   import { userFormSchema, type User } from "../types/user";
   import { apiServer } from "../utils/config";
-  import { getShowCuratorNotes } from "./UserPreferences";
+  import { getShowCuratorNotes, getUserCache, type UserCache } from "./UserPreferences";
   import { readStreamBody } from "../utils/tools";
 
+    let userCache: UserCache
     let user: User | null = $state(null)
     let cc: any
     let showUserNotes = $state(true)
@@ -13,6 +14,8 @@
     let httpError: string = $state("")
     if (browser){
         cc = getShowCuratorNotes()
+        userCache = getUserCache()
+        user = userCache.read()
         showUserNotes = cc.read()
     }
     $effect(() => {
@@ -39,9 +42,9 @@
                     httpError = await readStreamBody(response.body as ReadableStream)
                 } else {
                     user = await response.json()
-                    console.log(user)
-                    console.log(response)
+                    userCache.setUser(user as User)
                     httpError = ""
+                    window.location.reload()
                 }
             } catch (e){
                 console.error(e)

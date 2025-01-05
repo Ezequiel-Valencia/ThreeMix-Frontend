@@ -22,8 +22,4 @@ export const userFormSchema = z.object({
 
 export type User = z.infer<typeof userSchema>
 
-export function getUserFromCookie(){
-    return null;
-}
-
 
