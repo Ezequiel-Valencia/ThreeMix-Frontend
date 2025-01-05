@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { getShowCuratorNotes } from "./UserPrefernces";
+  import { getShowCuratorNotes } from "./UserPreferences";
     let cc: any
     let showCuratorReason: boolean = $state(true)
     if (browser){
