@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getLastVoteDate, getUserCache, type UserCache, type VoteDecision } from "./UserPreferences";
+  import { getLastVoteDate, getUserCache, type UserCache, type VoteDecision } from "../_island/_user/UserPreferences";
   import { browser } from "$app/environment";
-  import type { User } from "../types/user";
+  import type { User } from "../../types/user";
 
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
 

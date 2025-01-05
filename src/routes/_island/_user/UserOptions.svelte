@@ -1,10 +1,10 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { ZodIssue } from "zod";
-  import { userFormSchema, type User } from "../types/user";
-  import { apiServer } from "../utils/config";
+  import { userFormSchema, type User } from "../../../types/user";
+  import { apiServer } from "../../../utils/config";
   import { getShowCuratorNotes, getUserCache, type UserCache } from "./UserPreferences";
-  import { readStreamBody } from "../utils/tools";
+  import { readStreamBody } from "../../../utils/tools";
 
     let userCache: UserCache
     let user: User | null = $state(null)
@@ -44,7 +44,7 @@
                     user = await response.json()
                     userCache.setUser(user as User)
                     httpError = ""
-                    window.location.reload()
+                    window.location.replace("/")
                 }
             } catch (e){
                 console.error(e)

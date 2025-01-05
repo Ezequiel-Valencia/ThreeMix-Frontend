@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CenterStage from "./CenterStage.svelte";
-  import { getUserCache, type UserCache } from "./UserPreferences";
+  import CenterStage from "./_island/CenterStage.svelte";
+  import { getUserCache, type UserCache } from "./_island/_user/UserPreferences";
   import { browser } from "$app/environment";
   import type { User } from "../types/user";
 

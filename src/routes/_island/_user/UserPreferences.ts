@@ -1,5 +1,5 @@
 import { readable, writable, type Subscriber, type Unsubscriber } from "svelte/store";
-import type { User } from "../types/user";
+import type { User } from "../../../types/user";
 
 const isLocalStorageItemNotPresent = (key:string) => {
     let item = localStorage.getItem(key)
