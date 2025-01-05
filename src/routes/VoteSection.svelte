@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getLastVoteDate, type VoteDecision } from "./UserPrefernces";
+  import { getLastVoteDate, type VoteDecision } from "./UserPreferences";
   import { browser } from "$app/environment";
 
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
