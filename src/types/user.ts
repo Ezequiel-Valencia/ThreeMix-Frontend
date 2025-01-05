@@ -1,0 +1,29 @@
+
+import { z, type ZodFormattedError } from "zod"
+import { alphaNumericRegex, anRegexWithExtraChars } from "../utils/config"
+
+export const userSchema = z.object({
+    username: z.string().min(4).max(20).regex(alphaNumericRegex),
+    creationDate: z.string().min(2),
+    role: z.string().min(2)
+})
+
+export const userFormSchema = z.object({
+    username: z.string()
+    .min(4, "Username must have a minimum of 4 characters.")
+    .max(20, "Username can have a max of 15 characters.")
+    .regex(alphaNumericRegex, "Username must contain only letters and numbers."),
+
+    password: z.string()
+    .min(8, "Password must have a minimum of 8 characters.")
+    .max(20, "Password can have a max of 30 characters.")
+    .regex(anRegexWithExtraChars, "Password must contain only numbers, letters, and the following character set: ()!@#$%^&*")
+})
+
+export type User = z.infer<typeof userSchema>
+
+export function getUserFromCookie(){
+    return null;
+}
+
+
