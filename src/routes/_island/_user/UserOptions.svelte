@@ -4,7 +4,7 @@
   import { userFormSchema, type User } from "../../../types/user";
   import { apiServer } from "../../../utils/config";
   import { getShowCuratorNotes, getUserCache, type UserCache } from "./UserPreferences";
-  import { readStreamBody } from "../../../utils/tools";
+  import { authenticatedRequest, readStreamBody } from "../../../utils/tools";
 
     let userCache: UserCache
     let user: User | null = $state(null)
@@ -38,13 +38,13 @@
                     body: formData,
                     credentials: "include"
                 })
-                if (response.status != 200){
-                    httpError = await readStreamBody(response.body as ReadableStream)
-                } else {
+                if (response.ok){
                     user = await response.json()
                     userCache.setUser(user as User)
                     httpError = ""
                     window.location.replace("/")
+                } else {
+                    httpError = await readStreamBody(response.body as ReadableStream)
                 }
             } catch (e){
                 console.error(e)
@@ -53,6 +53,23 @@
             validationErrors = validation.error.errors
         }
     }
+
+    async function logout(){
+        try{
+            const resp = await authenticatedRequest("/logout", "POST")
+            if (typeof resp === "string"){
+                httpError = resp
+            } else if (resp.ok){
+                httpError = ""
+                userCache.delete()
+                window.location.replace("/")
+            } else{
+                httpError = await readStreamBody(resp.body as ReadableStream)
+            }
+        } catch(e){
+            httpError = "Unable to logout."
+        }      
+    }
     
 </script>
 
@@ -60,11 +77,14 @@
     {#if user != null}
         <div>
             <h1 style="font-size: x-large;">Hello {user.Username}</h1>
+            {#if httpError != ""}
+                <p>{httpError}</p>
+            {/if}
             <div style="display:flex; width:100%;">
                 <input bind:checked={showUserNotes} id="show-curator-notes" style="transform:scale(1.5);" type="checkbox"> 
                 <label style="white-space:nowrap; padding-left:4%;" for="show-curator-notes">Show curator reason for song selection?</label>
             </div>
-            <button style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded">Logout</button>
+            <button onclick={logout} style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded">Logout</button>
         </div>
     {:else}
         <div style="text-align: center;">
