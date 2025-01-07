@@ -47,6 +47,7 @@
                     httpError = await readStreamBody(response.body as ReadableStream)
                 }
             } catch (e){
+                httpError = "Unable to login"
                 console.error(e)
             }
         } else {
@@ -73,12 +74,18 @@
     
 </script>
 
+{#snippet showError(err: string)}
+    <div style="min-height: 2vh; background-color:rgba(118, 118, 118, 0.11); max-width: 30vw; border-width:2px; border-radius:8px; border-color:red; margin:3%;">
+        <p style="max-width: 30vw;">{err}</p>
+    </div>
+{/snippet}
+
 <section style="height:100%; width:100%;">
     {#if user != null}
         <div>
             <h1 style="font-size: x-large;">Hello {user.Username}</h1>
             {#if httpError != ""}
-                <p>{httpError}</p>
+                {@render showError(httpError)}
             {/if}
             <div style="display:flex; width:100%;">
                 <input bind:checked={showUserNotes} id="show-curator-notes" style="transform:scale(1.5);" type="checkbox"> 
@@ -101,10 +108,10 @@
                     </div>
                 </div>
                 {#each validationErrors as err}
-                    <p style="max-width: 30vw;">{err.message}</p>
+                    {@render showError(err.message)}
                 {/each}
                 {#if httpError != ""}
-                    <p>{httpError}</p>
+                    {@render showError(httpError)}
                 {/if}
                 <button onclick={() => {sendForm(true)}} style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded" type="submit">Login</button>
                 <br>
