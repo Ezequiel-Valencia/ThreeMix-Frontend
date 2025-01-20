@@ -1,4 +1,7 @@
-import { readable, writable } from "svelte/store";
+import { readable, writable, type Subscriber, type Unsubscriber } from "svelte/store";
+import type { User } from "../../../types/user";
+import Cookies from 'js-cookie'
+
 
 const isLocalStorageItemNotPresent = (key:string) => {
     let item = localStorage.getItem(key)
@@ -68,3 +71,47 @@ export function getLastVoteDate(){
         }
     }
 }
+
+export type UserCache = {
+    subscribe: (run: Subscriber<User | null>) => Unsubscriber,
+    read: () => User | null,
+    setUser: (user: User) => void,
+    delete: () => void
+}
+
+function readUserCache(key: string): User | null{
+    if (isLocalStorageItemNotPresent(key)) {
+        return null
+    } else if (Cookies.get("csrf_token") != undefined){
+        return JSON.parse(localStorage.getItem(key) as string) 
+    } else{
+        localStorage.removeItem(key)
+        return null
+    }
+}
+
+/**
+ * Attempt to get the user cache. But if the csrf or session tokens are not present,
+ * delete the user cache and return null.
+ * @returns UserCache
+ */
+export function getUserCache(): UserCache{
+    const key = 'user_cache'
+    let cachedUser: User | null = readUserCache(key)
+    
+    const {subscribe, set} = writable(cachedUser)
+    return {
+        subscribe,
+        read: (): User | null => {return readUserCache(key)},
+        setUser: (user: User) => {
+            set(user),
+            localStorage.setItem(key, JSON.stringify(user))
+        },
+        delete: () => {
+            if (!isLocalStorageItemNotPresent(key)){
+                localStorage.removeItem(key)
+            }
+        }
+    }
+}
+

@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getLastVoteDate, type VoteDecision } from "./UserPrefernces";
+  import { getLastVoteDate, getUserCache, type UserCache, type VoteDecision } from "../_island/_user/UserPreferences";
   import { browser } from "$app/environment";
+  import type { User } from "../../types/user";
+  import { authenticatedRequest, readStreamBody } from "../../utils/tools";
 
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
 
@@ -10,12 +12,16 @@
     let lastVoteHandler: any
     let lastVote: VoteDecision
     let didTheyVoteToday: boolean = $state(false)
+    let userCache: UserCache
+    let user: User | null = $state(null)
 
     // Unlike onMount it does not have to wait for DOM
     if (browser){
         lastVoteHandler = getLastVoteDate()
         lastVote = lastVoteHandler.read()
         didTheyVoteToday = new Date(lastVote.dateUTC).getDate() == new Date().getDate()
+        userCache = getUserCache()
+        user = userCache.read()
         if (didTheyVoteToday){
             selectedOption = lastVote.number
         }
@@ -41,9 +47,22 @@
         radioButtons[selectedOption].checked = true
     }
 
-    function handleVoteSubmit(e: Event){
-        lastVoteHandler.setVote({dateUTC: new Date().toUTCString(), number: selectedOption})
-        didTheyVoteToday = true
+    async function handleVoteSubmit(e: Event){
+        let responsePromise = authenticatedRequest("/voteMusic", "POST", 
+        JSON.stringify({SongOrder: selectedOption}), undefined, true)
+        if (typeof responsePromise !== "string"){
+            let response = await responsePromise
+            console.log(response)
+            if (response.ok){
+                lastVoteHandler.setVote({dateUTC: new Date().toUTCString(), number: selectedOption})
+                didTheyVoteToday = true
+            } else{
+                let body = await readStreamBody(response.body as ReadableStream)
+                window.alert(body)
+            }            
+        } else{
+            window.alert(responsePromise)
+        }
     }
 
 </script>
@@ -58,20 +77,26 @@
                 background-color: {didTheyVoteToday && selectedOption == i ? "rgba(128, 128, 128, 0.4)": "transparent" };
                 align-items:start; border-color: {i == selectedOption ? "black": ""}">
                 <input disabled={didTheyVoteToday} checked={selectedOption == i} class="particles-checkbox" type="radio" name="music-choice" id="radion-button-{i}"/>
-                <span>{song.title} by {song.artist}</span>
+                <span>{song.Title} by {song.Artist}</span>
             </button>
         {/each}
     </div>
-    {#if !didTheyVoteToday}
+    {#if !didTheyVoteToday && user != null}
         <button disabled={didTheyVoteToday} type="submit" 
         style="text-align: center;" 
         class="vote-button">{didTheyVoteToday ? "Voted": "Vote"}</button>
+    {:else if user == null}
+        <div style="text-align: center;">
+            <h2 style="font-size: x-large; margin:auto;">
+                Login to cast a vote.
+            </h2>
+        </div>
     {/if}
 </form>
 {#if didTheyVoteToday}
     <div style="text-align: center;">
         <h2 style="font-size: x-large; margin:auto;">
-            You've Voted For: {musicEntries[selectedOption].title} by {musicEntries[selectedOption].artist}
+            You've Voted For: {musicEntries[selectedOption].Title} by {musicEntries[selectedOption].Artist}
         </h2>
     </div>
 {/if}

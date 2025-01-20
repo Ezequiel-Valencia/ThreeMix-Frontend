@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
     let carouselEntity: HTMLElement;
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
-    
     onMount(() => {
         carouselEntity = document.getElementById("carousel") as HTMLElement
         document.addEventListener("keydown", (ev: KeyboardEvent) => {
@@ -72,10 +71,10 @@
                     onclick={(e) => {changeEntryInCarosuel(i)}}
                     onkeydown={(e) => {changeEntryInCarosuel(i)}}
                     class="carousel-item">
-                        <iframe style="pointer-events: {i == carosuelPosition ? 'all' : 'none'}; width: 30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.pathResource}" title={song.title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                        <h2>{song.title}</h2>
+                        <iframe style="pointer-events: {i == carosuelPosition ? 'all' : 'none'}; width: 30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.PathResource}" title={song.Title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <h2>{song.Title}</h2>
                         by
-                        <p>{song.artist}</p>
+                        <p>{song.Artist}</p>
                     </div>
                 {/each}
             </section>

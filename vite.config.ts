@@ -7,7 +7,9 @@ export default defineConfig({
         cors: true,
     },
     preview: {
-        cors: true
+        cors: {
+            origin: "http://localhost:8080"
+        },
     },
 
     test: {
