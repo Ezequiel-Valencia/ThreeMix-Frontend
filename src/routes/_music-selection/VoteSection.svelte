@@ -3,6 +3,7 @@
   import { getLastVoteDate, getUserCache, type UserCache, type VoteDecision } from "../_island/_user/UserPreferences";
   import { browser } from "$app/environment";
   import type { User } from "../../types/user";
+  import { authenticatedRequest, readStreamBody } from "../../utils/tools";
 
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
 
@@ -46,9 +47,22 @@
         radioButtons[selectedOption].checked = true
     }
 
-    function handleVoteSubmit(e: Event){
-        lastVoteHandler.setVote({dateUTC: new Date().toUTCString(), number: selectedOption})
-        didTheyVoteToday = true
+    async function handleVoteSubmit(e: Event){
+        let responsePromise = authenticatedRequest("/voteMusic", "POST", 
+        JSON.stringify({SongOrder: selectedOption}), undefined, true)
+        if (typeof responsePromise !== "string"){
+            let response = await responsePromise
+            console.log(response)
+            if (response.ok){
+                lastVoteHandler.setVote({dateUTC: new Date().toUTCString(), number: selectedOption})
+                didTheyVoteToday = true
+            } else{
+                let body = await readStreamBody(response.body as ReadableStream)
+                window.alert(body)
+            }            
+        } else{
+            window.alert(responsePromise)
+        }
     }
 
 </script>
@@ -82,7 +96,7 @@
 {#if didTheyVoteToday}
     <div style="text-align: center;">
         <h2 style="font-size: x-large; margin:auto;">
-            You've Voted For: {musicEntries[selectedOption].title} by {musicEntries[selectedOption].artist}
+            You've Voted For: {musicEntries[selectedOption].Title} by {musicEntries[selectedOption].Artist}
         </h2>
     </div>
 {/if}

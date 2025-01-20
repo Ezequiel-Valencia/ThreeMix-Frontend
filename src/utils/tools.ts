@@ -19,7 +19,7 @@ export async function readStreamBody(stream: ReadableStream<Uint8Array>): Promis
 
 
 export function authenticatedRequest(endpoint: string, setMethod: string, 
-  setBody?: BodyInit, setHeaders?: Headers): Promise<Response> | string{
+  setBody?: BodyInit, setHeaders?: Headers, isJSON?: boolean): Promise<Response> | string{
   const csrfToken = Cookies.get("csrf_token")
   if (csrfToken === undefined){
     // remove user cache if it's present cause its no longer valid
@@ -28,6 +28,9 @@ export function authenticatedRequest(endpoint: string, setMethod: string,
   }
   if (setHeaders === undefined){
     setHeaders = new Headers()
+  }
+  if (isJSON != undefined &&  isJSON){
+    setHeaders.append("Content-Type", "application/json")
   }
   setHeaders.append("X-CSRF-Token", csrfToken)
   let req: RequestInit = {
