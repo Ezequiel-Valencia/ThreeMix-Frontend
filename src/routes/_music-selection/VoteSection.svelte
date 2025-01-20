@@ -63,7 +63,7 @@
                 background-color: {didTheyVoteToday && selectedOption == i ? "rgba(128, 128, 128, 0.4)": "transparent" };
                 align-items:start; border-color: {i == selectedOption ? "black": ""}">
                 <input disabled={didTheyVoteToday} checked={selectedOption == i} class="particles-checkbox" type="radio" name="music-choice" id="radion-button-{i}"/>
-                <span>{song.title} by {song.artist}</span>
+                <span>{song.Title} by {song.Artist}</span>
             </button>
         {/each}
     </div>

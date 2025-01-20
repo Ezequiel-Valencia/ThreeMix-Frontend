@@ -4,30 +4,17 @@
   import MusicBody from "./_music-selection/MusicBody.svelte";
   import TopBar from "./TopBar.svelte";
   import VoteSection from "./_music-selection/VoteSection.svelte";
+  import { nonAuthenticatedRequest, readStreamBody } from "../utils/tools";
+  import type { TodaysSelection } from "../types/music";
+  import { onMount } from "svelte";
 
   let carosuelPosition = $state(1);
+  let todaysSelection: TodaysSelection | undefined = $state()
 
-  let todaysSelection = {
-    curatorName: "Ezequiel",
-    curatorDescription: "Here is the reason why this curator chose this set of songs. It's important to them for these particular reasons, and such.",
-    musicEntries: [
-        {
-            title: "Tv Off",
-            artist: "Kendrick Lamar",
-            pathResource: "U8F5G5wR1mk"
-        },
-        {
-            title: "Not Like Us",
-            artist: "Kendrick Lamar",
-            pathResource: "H58vbez_m4E"
-        },
-        {
-            title: "King Of Silence",
-            artist: "Cibao Mattoo",
-            pathResource: "5WRqGfxGXBw"
-        }
-    ]
-  }
+  onMount(async () => {
+    let response = await nonAuthenticatedRequest("/todaysMusic")
+    todaysSelection = await response.json()
+  })
 
 // Paint like shaders
 // https://codepen.io/DonKarlssonSan/embed/gROawd?default-tab=result#js-box
@@ -36,9 +23,16 @@
 
 <section id="front-page">
     <TopBar></TopBar>
-    <CuratorDescription curatorDescription={todaysSelection["curatorDescription"]} curatorName={todaysSelection["curatorName"]}></CuratorDescription>
-    <MusicBody musicEntries={todaysSelection["musicEntries"]} bind:carosuelPosition={carosuelPosition}></MusicBody>
-    <VoteSection musicEntries={todaysSelection["musicEntries"]} bind:carosuelPosition={carosuelPosition}></VoteSection>
+
+    <!-- Await block also gets SSR so with fetch, it proves to be a problem -->
+    <!-- So if statement works better -->
+    {#if todaysSelection}
+        <CuratorDescription curatorDescription={todaysSelection.CuratorDescription} curatorName={todaysSelection.CuratorName}></CuratorDescription>
+        <MusicBody musicEntries={todaysSelection.MusicEntries} bind:carosuelPosition={carosuelPosition}></MusicBody>
+        <VoteSection musicEntries={todaysSelection.MusicEntries} bind:carosuelPosition={carosuelPosition}></VoteSection>  
+    {:else}
+        <p>Waiting for music selection</p>
+    {/if}
 </section>
 
 

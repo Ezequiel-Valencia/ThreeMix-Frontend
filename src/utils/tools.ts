@@ -40,3 +40,10 @@ export function authenticatedRequest(endpoint: string, setMethod: string,
   return fetch(apiServer + endpoint, req)
 }
 
+export function nonAuthenticatedRequest(endpoint: string){
+  let req: RequestInit = {
+    method: "GET",
+  }
+  return fetch(apiServer + endpoint, req)
+}
+
