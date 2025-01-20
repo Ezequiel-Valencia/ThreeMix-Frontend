@@ -94,7 +94,7 @@
     {/if}
 </form>
 {#if didTheyVoteToday}
-    <div style="text-align: center;">
+    <div style="position:relative; text-align: center; bottom: 3vh;">
         <h2 style="font-size: x-large; margin:auto;">
             You've Voted For: {musicEntries[selectedOption].Title} by {musicEntries[selectedOption].Artist}
         </h2>
@@ -174,8 +174,8 @@
 
     .vote-button:hover:before,
     .vote-button:hover:after {
-        padding-top: 5%;
-        padding-bottom: 6%;
+        padding-top: 20px;
+        padding-bottom: 20px;
         border-color: #000;
         height: 100%;
         width: 100%;
