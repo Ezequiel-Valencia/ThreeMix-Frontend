@@ -23,7 +23,7 @@
                     {curatorName}
                 </figcaption>
             </figure>
-            <div style="padding-left: 5%;">
+            <div id="description-div" style="margin-right:1vw;padding-left: 5%;">
                 <h3>
                     <em>
                         <u>Why These Songs Where Chosen By {curatorName}:</u>
@@ -46,7 +46,7 @@
         position: relative;
         height: 100%;
         margin-top:5vh;
-        width: 60vw;
+        width: fit-content;
         max-width: 1000px;
         align-items: center;
         margin-left: auto;
@@ -56,6 +56,31 @@
         border-color: black;
     }
 
+    @media (max-width: 600px){
+        #curator-description{
+            position: relative;
+            height: 100%;
+            margin-top:10vh;
+            width: fit-content;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: rgba(128, 128, 128, 0.486);
+            border-radius: 8px;
+            border-color: black;
+        }
+         #description-div{
+            width: 60%;
+            margin-left: 10%;
+         }
+    }
+
+    @media (max-height: 500px){
+        #curator-description{
+            margin-top: 10vh;
+        }
+    }
+
     .figures{
         text-align: center;
         height: 100%;
@@ -63,6 +88,9 @@
         justify-content: center;
         align-items: center;
         position:relative;
+        margin-right: 1vw;
+        margin-left: 1vw;
     }
+
 
 </style>

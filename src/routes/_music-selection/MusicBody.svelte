@@ -71,7 +71,8 @@
                     onclick={(e) => {changeEntryInCarosuel(i)}}
                     onkeydown={(e) => {changeEntryInCarosuel(i)}}
                     class="carousel-item">
-                        <iframe style="pointer-events: {i == carosuelPosition ? 'all' : 'none'}; width: 30vw; aspect-ratio:16 /9;" src="https://www.youtube.com/embed/{song.PathResource}" title={song.Title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <iframe
+                        style="pointer-events: {i == carosuelPosition ? 'all' : 'none'};" src="https://www.youtube.com/embed/{song.PathResource}" title={song.Title} referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         <h2>{song.Title}</h2>
                         by
                         <p>{song.Artist}</p>
@@ -123,6 +124,37 @@
         translateX(calc(-40vw * var(--r)));
 
         z-index: calc(var(--position) - var(--absr));
+    }
+
+    iframe {
+        width: 30vw; 
+        aspect-ratio:16 /9;
+    }
+
+    @media (max-width: 600px){
+        .carousel-item{
+            text-align: center;
+            position: absolute;
+            --r: calc(var(--position) - var(--offset));
+            --absr: abs(var(--r));
+
+            transition: all 0.25s linear;
+
+            transform: rotateY(calc(-40deg * var(--r)))
+            translateX(calc(-65vw * var(--r)));
+
+            z-index: calc(var(--position) - var(--absr));
+        }
+        iframe{
+            aspect-ratio: 16/16;
+            width: 50vw;
+        }
+    }
+
+    @media (max-height: 500px){
+        #carousel{
+            height: 60vh;
+        }
     }
 
     .side-button{
