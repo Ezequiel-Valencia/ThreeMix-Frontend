@@ -2,8 +2,10 @@
     // 
   import { onMount } from 'svelte';
   import UserOptions from './_user/UserOptions.svelte';
+  import Info from './_info/Info.svelte';
     
-    let { showPastVotes = $bindable(), showUserOptions = $bindable() } = $props()
+    let { showPastVotes = $bindable(), 
+      showUserOptions = $bindable(), showAboutInfo = $bindable(true) } = $props()
 
     onMount(() => {
       let chooseVoteDate = document.getElementById("center-stage") as HTMLElement;
@@ -11,7 +13,10 @@
         if (e.target != null && e.target instanceof Node){
           if (showPastVotes){
             showPastVotes = chooseVoteDate.contains(e.target);
-          } else{
+          } else if (showAboutInfo){
+            showAboutInfo = chooseVoteDate.contains(e.target)
+          }
+          else{
             showUserOptions = chooseVoteDate.contains(e.target)
           }
         }
@@ -30,6 +35,8 @@
           <!-- <Calendar></Calendar> -->
         {:else if showUserOptions}
           <UserOptions></UserOptions>
+        {:else if showAboutInfo}
+          <Info></Info>
         {/if}
     </div>
 </section>

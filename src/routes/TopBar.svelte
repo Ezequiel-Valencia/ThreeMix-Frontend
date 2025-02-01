@@ -6,6 +6,7 @@
 
     let showPastVotes = $state(false);
     let showUserOptions = $state(false);
+    let showAboutInfo = $state(false);
     let userCache: UserCache
     let user: User | null = $state(null)
     if (browser){
@@ -23,12 +24,14 @@
         </figure>
     </button>
 
-    <div style="text-align: center;">
-        <h1 id="title-text">Three-Mix</h1>
-        <em>
-            <p style="font-family: 'Times New Roman', Times, serif;">Remixing the way music is found.</p>
-        </em> 
-    </div>
+    <button onclick={() => {showAboutInfo = !showAboutInfo}} style="text-align: center;">
+        <div>
+            <h1 id="title-text">Three-Mix</h1>
+            <em>
+                <p style="font-family: 'Times New Roman', Times, serif;">Remixing the way music is found.</p>
+            </em>
+        </div>
+    </button>
     <button onclick={() => {showUserOptions = !showUserOptions}}>
         <figure style="padding-right:2vw;" class="figures">
             <img class="icons" src="user-circle.svg" alt="User">
@@ -36,8 +39,11 @@
         </figure>
     </button>
 
-    {#if showPastVotes || showUserOptions}
-        <CenterStage bind:showUserOptions={showUserOptions} bind:showPastVotes={showPastVotes}></CenterStage>
+    {#if showPastVotes || showUserOptions || showAboutInfo}
+        <CenterStage
+        bind:showAboutInfo={showAboutInfo}
+        bind:showUserOptions={showUserOptions} 
+        bind:showPastVotes={showPastVotes}></CenterStage>
     {/if}
 
 </nav>
