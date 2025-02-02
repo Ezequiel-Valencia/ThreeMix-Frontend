@@ -45,6 +45,7 @@ export function authenticatedRequest(endpoint: string, setMethod: string,
 
 export function nonAuthenticatedRequest(endpoint: string){
   let req: RequestInit = {
+    mode: 'cors',
     method: "GET",
   }
   return fetch(apiServer + endpoint, req)
