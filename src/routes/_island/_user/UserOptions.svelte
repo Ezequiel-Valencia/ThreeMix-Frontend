@@ -4,6 +4,7 @@
   import { getShowCuratorNotes, getUserCache, type UserCache } from "./UserPreferences";
   import { authenticatedRequest, readStreamBody } from "../../../utils/tools";
   import UserForm from "./UserForm.svelte";
+  import { apiServer } from "../../../utils/config";
 
     let userCache: UserCache
     let user: User | null = $state(null)
@@ -59,6 +60,13 @@
                 <input bind:checked={showUserNotes} id="show-curator-notes" style="transform:scale(1.5);" type="checkbox"> 
                 <label style="white-space:nowrap; padding-left:4%;" for="show-curator-notes">Show curator reason for song selection?</label>
             </div>
+            {#if user.Role == "Unlimited" || user.Role == "TrustedCurator" 
+            || user.Role == "Curator" || user.Role == "OneSubmission"}
+                <button style="font-size: medium; text-decoration-color: black; text-decoration-line: underline; padding-top: 5%;"
+                onclick={() => {window.open(apiServer.split("/api")[0] + "/curatorPage")}}>
+                    Curator Page
+                </button>
+            {/if}
             <button onclick={logout} style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded">Logout</button>
         </div>
     {:else}
