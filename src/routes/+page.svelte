@@ -14,7 +14,7 @@
   onMount(async () => {
     let response = await nonAuthenticatedRequest("/todaysMusic")
     todaysSelection = await response.json()
-    todaysSelection?.MusicEntries.sort((song1, song2) => {return song1.SongOrder - song2.SongOrder})
+    todaysSelection!.MusicEntries = todaysSelection!.MusicEntries.sort((song1, song2) => {return song1.SongOrder - song2.SongOrder})
   })
 
 // Paint like shaders
