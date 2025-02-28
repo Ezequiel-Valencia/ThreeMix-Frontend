@@ -3,7 +3,7 @@
   import { getLastVoteDate, getUserCache, type UserCache, type VoteDecision } from "../_island/_user/UserPreferences";
   import { browser } from "$app/environment";
   import type { User } from "../../types/user";
-  import { authenticatedRequest, readStreamBody } from "../../utils/tools";
+  import { BackendRequestBuilder, readStreamBody } from "../../utils/tools";
 
     let { musicEntries, carosuelPosition = $bindable(1) } = $props()
 
@@ -48,8 +48,9 @@
     }
 
     async function handleVoteSubmit(e: Event){
-        let responsePromise = authenticatedRequest("/voteMusic", "POST", 
-        JSON.stringify({SongOrder: selectedOption}), undefined, true)
+        let responsePromise = new BackendRequestBuilder().setEndpoint("/voteMusic")
+        .setMethod("POST").isSendingJSON(true)
+        .setBody(JSON.stringify({SongOrder: selectedOption})).sendAuthenticatedRequest()
         if (typeof responsePromise !== "string"){
             let response = await responsePromise
             console.log(response)
