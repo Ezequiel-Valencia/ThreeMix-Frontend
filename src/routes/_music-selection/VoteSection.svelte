@@ -48,9 +48,10 @@
     }
 
     async function handleVoteSubmit(e: Event){
+        let jsonVersionOfVote = JSON.stringify({SongOrder: selectedOption})
         let responsePromise = new BackendRequestBuilder().setEndpoint("/voteMusic")
         .setMethod("POST").isSendingJSON(true)
-        .setBody(JSON.stringify({SongOrder: selectedOption})).sendAuthenticatedRequest()
+        .setBody(jsonVersionOfVote).sendAuthenticatedRequest()
         if (typeof responsePromise !== "string"){
             let response = await responsePromise
             console.log(response)

@@ -77,7 +77,7 @@
         overflow-y: auto;
     }
     a {
-        color: #4CAF50;
+        color: #4c74af;
         text-decoration: none;
         font-weight: bold;
     }

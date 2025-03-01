@@ -68,6 +68,7 @@
                 onclick={() => {window.open(apiServer.split("/api")[0] + "/curatorPage")}}>
                     Curator Page
                 </button>
+                <br>
             {/if}
             <button onclick={logout} style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded">Logout</button>
         </div>
