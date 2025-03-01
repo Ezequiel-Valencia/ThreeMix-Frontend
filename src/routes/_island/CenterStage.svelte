@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import UserOptions from './_user/UserOptions.svelte';
   import Info from './_info/Info.svelte';
+  import UserPastVotes from './_calendar/UserPastVotes.svelte';
     
     let { showPastVotes = $bindable(), 
       showUserOptions = $bindable(), showAboutInfo = $bindable(true) } = $props()
@@ -32,7 +33,7 @@
   height: 100vh; width:100vw; left:0; top:0; background-color: rgba(148, 145, 146, 0.9);">
     <div id="center-stage" style="">
         {#if showPastVotes}
-          <!-- <Calendar></Calendar> -->
+          <UserPastVotes></UserPastVotes>
         {:else if showUserOptions}
           <UserOptions></UserOptions>
         {:else if showAboutInfo}
