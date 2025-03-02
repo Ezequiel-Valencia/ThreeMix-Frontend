@@ -4,7 +4,7 @@
   import MusicBody from "./_music-selection/MusicBody.svelte";
   import TopBar from "./TopBar.svelte";
   import VoteSection from "./_music-selection/VoteSection.svelte";
-  import { nonAuthenticatedRequest, readStreamBody } from "../utils/tools";
+  import { BackendRequestBuilder, readStreamBody } from "../utils/tools";
   import type { TodaysSelection } from "../types/music";
   import { onMount } from "svelte";
 
@@ -12,7 +12,7 @@
   let todaysSelection: TodaysSelection | undefined = $state()
 
   onMount(async () => {
-    let response = await nonAuthenticatedRequest("/todaysMusic")
+    let response = await new BackendRequestBuilder().setEndpoint("/todaysMusic").sendUnAuthenticatedRequest()
     todaysSelection = await response.json()
     todaysSelection!.MusicEntries = todaysSelection!.MusicEntries.sort((song1, song2) => {return song1.SongOrder - song2.SongOrder})
   })

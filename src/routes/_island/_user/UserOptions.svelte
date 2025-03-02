@@ -2,7 +2,7 @@
   import { browser } from "$app/environment";
   import { type User } from "../../../types/user";
   import { getShowCuratorNotes, getUserCache, type UserCache } from "./UserPreferences";
-  import { authenticatedRequest, readStreamBody } from "../../../utils/tools";
+  import { BackendRequestBuilder, readStreamBody } from "../../../utils/tools";
   import UserForm from "./UserForm.svelte";
   import { apiServer } from "../../../utils/config";
 
@@ -26,7 +26,9 @@
 
     async function logout(){
         try{
-            const resp = await authenticatedRequest("/logout", "POST")
+            let backend = new BackendRequestBuilder()
+            const resp = await backend.setEndpoint("/logout")
+            .setMethod("POST").sendAuthenticatedRequest()
             if (typeof resp === "string"){
                 httpError = resp
             } else if (resp.ok){
@@ -66,6 +68,7 @@
                 onclick={() => {window.open(apiServer.split("/api")[0] + "/curatorPage")}}>
                     Curator Page
                 </button>
+                <br>
             {/if}
             <button onclick={logout} style="margin-top: 5%; padding-left:10%; padding-right:10%;" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded">Logout</button>
         </div>
