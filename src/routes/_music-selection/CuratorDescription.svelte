@@ -10,7 +10,7 @@
         showCuratorReason = b
      })
     }
-     let { curatorName, curatorDescription } = $props()
+     let { descriptionTitle: descriptionTitle, curatorDescription, curatorName: curatorName } = $props()
 </script>
 
 
@@ -26,7 +26,7 @@
             <div id="description-div" style="margin-right:1vw;padding-left: 5%;">
                 <h3>
                     <em>
-                        <u>Why These Songs Where Chosen By {curatorName}:</u>
+                        <u>{descriptionTitle}</u>
                     </em>
                 </h3>
                 <p>
